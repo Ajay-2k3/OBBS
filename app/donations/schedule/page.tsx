@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout"
 import ScheduleDonationForm from "@/components/donations/schedule-donation-form"
 
 export default async function ScheduleDonationPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get user session
   const {

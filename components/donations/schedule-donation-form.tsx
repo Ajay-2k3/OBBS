@@ -34,6 +34,8 @@ interface ScheduleDonationFormProps {
 }
 
 export default function ScheduleDonationForm({ user, bloodBanks }: ScheduleDonationFormProps) {
+  // Ensure bloodBanks is always an array
+  const safeBloodBanks = Array.isArray(bloodBanks) ? bloodBanks : []
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date>()
@@ -84,7 +86,7 @@ export default function ScheduleDonationForm({ user, bloodBanks }: ScheduleDonat
     }
   }
 
-  const selectedBloodBank = bloodBanks.find((bank) => bank.id === formData.bloodBankId)
+  const selectedBloodBank = safeBloodBanks.find((bank) => bank.id === formData.bloodBankId)
 
   return (
     <Card>
@@ -108,7 +110,7 @@ export default function ScheduleDonationForm({ user, bloodBanks }: ScheduleDonat
                 <SelectValue placeholder="Choose a blood bank" />
               </SelectTrigger>
               <SelectContent>
-                {bloodBanks.map((bank) => (
+                {safeBloodBanks.map((bank) => (
                   <SelectItem key={bank.id} value={bank.id}>
                     <div className="flex flex-col">
                       <span className="font-medium">{bank.name}</span>

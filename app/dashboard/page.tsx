@@ -7,7 +7,7 @@ import BloodBankDashboard from "@/components/dashboard/blood-bank-dashboard"
 import AdminDashboard from "@/components/dashboard/admin-dashboard"
 
 export default async function DashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get user session
   const {

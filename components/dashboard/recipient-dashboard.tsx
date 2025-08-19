@@ -18,7 +18,7 @@ interface RecipientDashboardProps {
 }
 
 export default async function RecipientDashboard({ user }: RecipientDashboardProps) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get blood requests
   const { data: bloodRequests } = await supabase
@@ -77,28 +77,28 @@ export default async function RecipientDashboard({ user }: RecipientDashboardPro
           title="Active Requests"
           value={pendingRequests}
           description="Currently processing"
-          icon={Clock}
+          icon="clock"
           className="border-yellow-200"
         />
         <StatsCard
           title="Fulfilled Requests"
           value={fulfilledRequests}
           description="Successfully completed"
-          icon={CheckCircle}
+          icon="checkCircle"
           className="border-green-200"
         />
         <StatsCard
           title="Units Received"
           value={totalUnitsReceived}
           description="Total blood units"
-          icon={Heart}
+          icon="heart"
           className="border-red-200"
         />
         <StatsCard
           title="Available Units"
           value={availableBlood?.reduce((sum, b) => sum + b.units_available, 0) || 0}
           description="Your blood type nearby"
-          icon={Search}
+          icon="search"
           className="border-blue-200"
         />
       </div>

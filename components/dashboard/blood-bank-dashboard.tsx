@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import StatsCard from "@/components/ui/stats-card"
+import BloodBankStatsCards from "./blood-bank-stats-cards"
 import BloodTypeBadge from "@/components/ui/blood-type-badge"
 import StatusBadge from "@/components/ui/status-badge"
 import UrgencyBadge from "@/components/ui/urgency-badge"
 import { Package, Users, Calendar, AlertTriangle, Plus, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import BloodBankNotFound from "./blood-bank-not-found"
+import StaffModal from "@/components/blood-management/staff-modal"
 
 interface BloodBankDashboardProps {
   user: {
@@ -17,21 +19,14 @@ interface BloodBankDashboardProps {
 }
 
 export default async function BloodBankDashboard({ user }: BloodBankDashboardProps) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get blood bank info
   const { data: bloodBank } = await supabase.from("blood_banks").select("*").eq("manager_id", user.id).single()
 
-  if (!bloodBank) {
-    return (
-      <div className="text-center py-12">
-        <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
-        <h2 className="text-xl font-semibold mb-2">Blood Bank Not Found</h2>
-        <p className="text-gray-600 mb-4">You don't seem to be associated with a blood bank.</p>
-        <Button>Contact Administrator</Button>
-      </div>
-    )
-  }
+    if (!user || user.role !== 'blood_bank' || !user.blood_bank_id) {
+      return <BloodBankNotFound />
+    }
 
   // Get inventory data
   const { data: inventory } = await supabase.from("blood_inventory").select("*").eq("blood_bank_id", bloodBank.id)
@@ -95,37 +90,13 @@ export default async function BloodBankDashboard({ user }: BloodBankDashboardPro
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <StatsCard
-          title="Total Inventory"
-          value={totalInventory}
-          description="Units available"
-          icon={Package}
-          className="border-blue-200"
-        />
-        <StatsCard
-          title="Low Stock Alerts"
-          value={lowStockItems}
-          description="Blood types < 10 units"
-          icon={AlertTriangle}
-          className="border-yellow-200"
-        />
-        <StatsCard
-          title="Expiring Soon"
-          value={expiringItems}
-          description="Within 7 days"
-          icon={Calendar}
-          className="border-red-200"
-        />
-        <StatsCard
-          title="Today's Donations"
-          value={todayDonations?.length || 0}
-          description="Scheduled appointments"
-          icon={Users}
-          className="border-green-200"
-        />
-      </div>
+      {/* Stats Cards (Client Component) */}
+      <BloodBankStatsCards
+        totalInventory={totalInventory}
+        lowStockItems={lowStockItems}
+        expiringItems={expiringItems}
+        todayDonations={todayDonations?.length || 0}
+      />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -171,6 +142,15 @@ export default async function BloodBankDashboard({ user }: BloodBankDashboardPro
           </CardContent>
         </Card>
       </div>
+
+      {/* Staff Management (Client Component) */}
+      {/*
+      <StaffModal
+        staff={staff}
+        onAdd={handleAddStaff}
+        onRemove={handleRemoveStaff}
+      />
+      */}
 
       {/* Blood Inventory Overview */}
       <Card>

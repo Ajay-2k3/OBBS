@@ -7,7 +7,7 @@ import BloodTypeBadge from "@/components/ui/blood-type-badge"
 import { Search, MapPin, Phone, Clock } from "lucide-react"
 
 export default async function BloodBankPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get all verified blood banks with their inventory
   const { data: bloodBanks } = await supabase

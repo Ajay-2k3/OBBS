@@ -12,7 +12,7 @@ interface AdminDashboardProps {
 }
 
 export default async function AdminDashboard({ user }: AdminDashboardProps) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get system-wide statistics
   const { count: totalUsers } = await supabase.from("users").select("*", { count: "exact", head: true })
@@ -67,28 +67,28 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
           title="Total Users"
           value={totalUsers || 0}
           description="Registered users"
-          icon={Users}
+          icon="users"
           className="border-blue-200"
         />
         <StatsCard
           title="Blood Banks"
           value={`${verifiedBloodBanks || 0}/${totalBloodBanks || 0}`}
           description="Verified/Total"
-          icon={Building}
+          icon="building"
           className="border-green-200"
         />
         <StatsCard
           title="Blood Inventory"
           value={totalUnits}
           description="Total units available"
-          icon={Droplets}
+          icon="droplets"
           className="border-red-200"
         />
         <StatsCard
           title="Pending Requests"
           value={pendingRequests || 0}
           description="Awaiting processing"
-          icon={AlertTriangle}
+          icon="alertTriangle"
           className="border-yellow-200"
         />
       </div>

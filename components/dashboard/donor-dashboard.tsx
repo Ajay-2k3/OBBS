@@ -19,7 +19,7 @@ interface DonorDashboardProps {
 }
 
 export default async function DonorDashboard({ user }: DonorDashboardProps) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get donation statistics
   const { data: donations } = await supabase
@@ -84,28 +84,28 @@ export default async function DonorDashboard({ user }: DonorDashboardProps) {
           title="Total Donations"
           value={totalDonations}
           description="Scheduled and completed"
-          icon={Heart}
+          icon="heart"
           className="border-red-200"
         />
         <StatsCard
           title="Units Contributed"
           value={totalUnitsContributed}
           description="Total blood units donated"
-          icon={Award}
+          icon="award"
           className="border-blue-200"
         />
         <StatsCard
           title="Lives Impacted"
           value={totalUnitsContributed * 3}
           description="Each unit can save 3 lives"
-          icon={Heart}
+          icon="heart"
           className="border-green-200"
         />
         <StatsCard
           title="Next Eligible"
           value={canDonate ? "Now" : `${56 - (daysSinceLastDonation || 0)} days`}
           description="Time until next donation"
-          icon={Clock}
+          icon="clock"
           className="border-orange-200"
         />
       </div>

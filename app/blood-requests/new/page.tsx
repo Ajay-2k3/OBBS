@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout"
 import CreateBloodRequestForm from "@/components/blood-requests/create-blood-request-form"
 
 export default async function NewBloodRequestPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get user session
   const {

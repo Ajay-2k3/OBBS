@@ -9,7 +9,7 @@ interface DashboardLayoutProps {
 }
 
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Get user session
   const {
