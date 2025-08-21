@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { createClient } from "@/lib/supabase/server"
+import { createServiceRoleClient } from "@/lib/supabase/service"
 import { redirect } from "next/navigation"
 import Navbar from "./navbar"
 import NotificationProvider from "@/components/real-time/notification-provider"
@@ -20,15 +21,18 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     redirect("/auth/login")
   }
 
+  // Use service role client to bypass RLS for user profile lookup
+  const serviceClient = createServiceRoleClient()
+  
   // Get user profile
-  const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
+  const { data: profile } = await serviceClient.from("users").select("*").eq("id", user.id).single()
 
   if (!profile) {
     redirect("/auth/login")
   }
 
-  // Get unread notifications count
-  const { count: notificationCount } = await supabase
+  // Get unread notifications count using service role client
+  const { count: notificationCount } = await serviceClient
     .from("notifications")
     .select("*", { count: "exact", head: true })
     .eq("user_id", user.id)

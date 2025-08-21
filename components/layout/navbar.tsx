@@ -30,16 +30,50 @@ interface NavbarProps {
   notifications?: number
 }
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "Donations", href: "/donations", icon: Calendar },
-  { name: "Blood Bank", href: "/blood-bank", icon: Droplets },
-  { name: "Community", href: "/community", icon: Users },
-]
+const getNavigationForRole = (role: string) => {
+  const baseNavigation = [
+    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Community", href: "/community", icon: Users },
+  ]
+
+  switch (role) {
+    case "admin":
+      return [
+        ...baseNavigation,
+        { name: "Users", href: "/admin/users", icon: Users },
+        { name: "Blood Banks", href: "/admin/blood-banks", icon: Droplets },
+        { name: "Audit Logs", href: "/admin/audit-logs", icon: Settings },
+      ]
+    case "blood_bank":
+      return [
+        ...baseNavigation,
+        { name: "Inventory", href: "/blood-bank/inventory", icon: Droplets },
+        { name: "Donations", href: "/blood-bank/donations", icon: Calendar },
+        { name: "Requests", href: "/blood-bank/requests", icon: Heart },
+        { name: "Staff", href: "/blood-bank/staff", icon: Users },
+      ]
+    case "donor":
+      return [
+        ...baseNavigation,
+        { name: "Schedule Donation", href: "/donations/schedule", icon: Calendar },
+        { name: "Donation History", href: "/donations/history", icon: Calendar },
+      ]
+    case "recipient":
+      return [
+        ...baseNavigation,
+        { name: "New Request", href: "/blood-requests/new", icon: Heart },
+        { name: "Request History", href: "/blood-requests/history", icon: Heart },
+      ]
+    default:
+      return baseNavigation
+  }
+}
 
 export default function Navbar({ user, notifications = 0 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  
+  const navigation = getNavigationForRole(user.role)
 
   const getRoleColor = (role: string) => {
     switch (role) {

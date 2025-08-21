@@ -1,8 +1,8 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Heart, Users, Droplets, Shield } from "lucide-react"
 import Link from "next/link"
+import { headers } from "next/headers"
 
 export default async function HomePage() {
   if (!isSupabaseConfigured) {
@@ -13,24 +13,8 @@ export default async function HomePage() {
     )
   }
 
-  try {
-    const supabase = await createClient()
-
-    // Ensure supabase client is valid before calling getUser
-    if (supabase && supabase.auth) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      // If user is logged in, redirect to dashboard
-      if (user) {
-        redirect("/dashboard")
-      }
-    }
-  } catch (error) {
-    console.error("Authentication check failed:", error)
-    // Continue to show landing page if auth check fails
-  }
+  // Let middleware handle authentication redirects
+  // This prevents redirect loops
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50">

@@ -23,8 +23,8 @@ export async function signIn(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath("/dashboard")
-  redirect("/dashboard")
+  revalidatePath("/")
+  redirect("/")
 }
 
 export async function signUp(formData: FormData) {
@@ -46,7 +46,7 @@ export async function signUp(formData: FormData) {
     password,
     options: {
       emailRedirectTo:
-        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${process.env.NEXT_PUBLIC_SUPABASE_URL}/dashboard`,
+        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${process.env.NEXT_PUBLIC_SUPABASE_URL}/`,
     },
   })
 

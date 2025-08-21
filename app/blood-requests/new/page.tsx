@@ -19,7 +19,7 @@ export default async function NewBloodRequestPage() {
   const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
 
   if (!profile || profile.role !== "recipient") {
-    redirect("/dashboard")
+    redirect("/")
   }
 
   return (

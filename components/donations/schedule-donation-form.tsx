@@ -78,7 +78,7 @@ export default function ScheduleDonationForm({ user, bloodBanks }: ScheduleDonat
 
       if (error) throw error
 
-      router.push("/dashboard?success=donation-scheduled")
+      router.push("/?success=donation-scheduled")
     } catch (error) {
       console.error("Error scheduling donation:", error)
     } finally {

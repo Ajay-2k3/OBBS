@@ -12,8 +12,8 @@ interface DonorDashboardProps {
   user: {
     id: string
     full_name: string
-    blood_type: string
-    last_donation_date: string | null
+    blood_type?: string
+    last_donation_date?: string | null
     role: string
   }
 }
@@ -59,7 +59,9 @@ export default async function DonorDashboard({ user }: DonorDashboardProps) {
             <h1 className="text-3xl font-bold">Welcome back, {user.full_name.split(" ")[0]}!</h1>
             <p className="text-red-100 mt-2">Thank you for being a life-saving hero in our community.</p>
             <div className="flex items-center space-x-4 mt-4">
-              <BloodTypeBadge bloodType={user.blood_type} className="bg-white/20 text-white border-white/30" />
+              {user.blood_type && (
+                <BloodTypeBadge bloodType={user.blood_type} className="bg-white/20 text-white border-white/30" />
+              )}
               <div className="text-sm">
                 {daysSinceLastDonation ? (
                   <span>Last donation: {daysSinceLastDonation} days ago</span>

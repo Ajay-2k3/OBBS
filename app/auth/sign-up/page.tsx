@@ -10,7 +10,8 @@ export default async function SignUpPage() {
   } = await supabase.auth.getSession()
 
   if (session) {
-    redirect("/dashboard")
+    // Redirect to homepage and let middleware handle role-based routing
+    redirect("/")
   }
 
   return (

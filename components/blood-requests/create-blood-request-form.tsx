@@ -67,7 +67,7 @@ export default function CreateBloodRequestForm({ user }: CreateBloodRequestFormP
 
       if (error) throw error
 
-      router.push("/dashboard?success=blood-request-created")
+      router.push("/?success=blood-request-created")
     } catch (error) {
       console.error("Error creating blood request:", error)
     } finally {

@@ -2,13 +2,12 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import StatsCard from "@/components/ui/stats-card"
 import { Users, Building, Droplets, AlertTriangle, TrendingUp, Shield } from "lucide-react"
+import { UserWithPermissions } from "@/lib/permissions"
+import DashboardHeader from "./common/dashboard-header"
+import PermissionGate from "./common/permission-gate"
 
 interface AdminDashboardProps {
-  user: {
-    id: string
-    full_name: string
-    role: string
-  }
+  user: UserWithPermissions
 }
 
 export default async function AdminDashboard({ user }: AdminDashboardProps) {

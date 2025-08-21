@@ -12,7 +12,7 @@ interface RecipientDashboardProps {
   user: {
     id: string
     full_name: string
-    blood_type: string
+    blood_type?: string
     role: string
   }
 }
@@ -36,13 +36,15 @@ export default async function RecipientDashboard({ user }: RecipientDashboardPro
     .order("urgency_level", { ascending: false })
 
   // Get blood availability for user's blood type
-  const { data: availableBlood } = await supabase
-    .from("blood_inventory")
-    .select("blood_type, units_available, blood_banks(name, city)")
-    .eq("blood_type", user.blood_type)
-    .eq("is_available", true)
-    .gt("units_available", 0)
-    .gte("expiry_date", new Date().toISOString().split("T")[0])
+  const { data: availableBlood } = user.blood_type 
+    ? await supabase
+        .from("blood_inventory")
+        .select("blood_type, units_available, blood_banks(name, city)")
+        .eq("blood_type", user.blood_type)
+        .eq("is_available", true)
+        .gt("units_available", 0)
+        .gte("expiry_date", new Date().toISOString().split("T")[0])
+    : { data: [] }
 
   const totalRequests = bloodRequests?.length || 0
   const pendingRequests = bloodRequests?.filter((r) => r.status === "pending").length || 0
@@ -58,10 +60,14 @@ export default async function RecipientDashboard({ user }: RecipientDashboardPro
             <h1 className="text-3xl font-bold">Welcome, {user.full_name.split(" ")[0]}</h1>
             <p className="text-blue-100 mt-2">We're here to help you find the blood you need.</p>
             <div className="flex items-center space-x-4 mt-4">
-              <BloodTypeBadge bloodType={user.blood_type} className="bg-white/20 text-white border-white/30" />
-              <div className="text-sm">
-                <span>Looking for {user.blood_type} blood type</span>
-              </div>
+              {user.blood_type && (
+                <>
+                  <BloodTypeBadge bloodType={user.blood_type} className="bg-white/20 text-white border-white/30" />
+                  <div className="text-sm">
+                    <span>Looking for {user.blood_type} blood type</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div className="text-right">
@@ -157,7 +163,7 @@ export default async function RecipientDashboard({ user }: RecipientDashboardPro
               ) : (
                 <div className="text-center py-4 text-gray-500">
                   <AlertCircle className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                  <p>No {user.blood_type} blood currently available</p>
+                  <p>No {user.blood_type || 'blood of your type'} currently available</p>
                   <p className="text-sm">Consider creating a request to be notified when available</p>
                 </div>
               )}

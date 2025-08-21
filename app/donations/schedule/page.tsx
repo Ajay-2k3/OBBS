@@ -19,7 +19,7 @@ export default async function ScheduleDonationPage() {
   const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
 
   if (!profile || profile.role !== "donor") {
-    redirect("/dashboard")
+    redirect("/")
   }
 
   // Check if user can donate (56 days since last donation)
@@ -30,7 +30,7 @@ export default async function ScheduleDonationPage() {
   const canDonate = !daysSinceLastDonation || daysSinceLastDonation >= 56
 
   if (!canDonate) {
-    redirect("/dashboard")
+    redirect("/")
   }
 
   // Get available blood banks

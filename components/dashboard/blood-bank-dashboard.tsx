@@ -1,32 +1,34 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import BloodBankStatsCards from "./blood-bank-stats-cards"
 import BloodTypeBadge from "@/components/ui/blood-type-badge"
 import StatusBadge from "@/components/ui/status-badge"
 import UrgencyBadge from "@/components/ui/urgency-badge"
 import { Package, Users, Calendar, AlertTriangle, Plus, TrendingUp } from "lucide-react"
 import Link from "next/link"
 import BloodBankNotFound from "./blood-bank-not-found"
+import BloodBankStatsCards from "./blood-bank-stats-cards"
 import StaffModal from "@/components/blood-management/staff-modal"
+import { UserWithPermissions } from "@/lib/permissions"
+import DashboardHeader from "./common/dashboard-header"
 
 interface BloodBankDashboardProps {
-  user: {
-    id: string
-    full_name: string
-    role: string
-  }
+  user: UserWithPermissions
 }
 
 export default async function BloodBankDashboard({ user }: BloodBankDashboardProps) {
   const supabase = await createClient()
 
   // Get blood bank info
-  const { data: bloodBank } = await supabase.from("blood_banks").select("*").eq("manager_id", user.id).single()
+  const { data: bloodBank } = await supabase
+    .from("blood_banks")
+    .select("*")
+    .or(`admin_id.eq.${user.id},id.eq.${user.blood_bank_id}`)
+    .single()
 
-    if (!user || user.role !== 'blood_bank' || !user.blood_bank_id) {
-      return <BloodBankNotFound />
-    }
+  if (!user || user.role !== 'blood_bank' || (!user.blood_bank_id && !bloodBank)) {
+    return <BloodBankNotFound />
+  }
 
   // Get inventory data
   const { data: inventory } = await supabase.from("blood_inventory").select("*").eq("blood_bank_id", bloodBank.id)
